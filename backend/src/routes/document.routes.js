@@ -1,0 +1,17 @@
+const express = require('express');
+const router = express.Router({ mergeParams: true });
+const multer = require('multer');
+const documentController = require('../controllers/document.controller');
+const { requireDemoUser } = require('../middleware/demoUser');
+
+router.use(requireDemoUser);
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 15 * 1024 * 1024 } // 15MB limit
+});
+
+router.post('/', upload.single('file'), documentController.uploadDocument);
+router.get('/', documentController.getClaimDocuments);
+
+module.exports = router;
